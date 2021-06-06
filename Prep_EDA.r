@@ -12,16 +12,26 @@ library(gridExtra)
 
 # Extract Data
 aug_train_complete <- read.csv('aug_train.csv', na.strings=c("", "NA"))
+aug_test_complete <- read.csv('aug_test.csv', na.strings=c("", "NA"))
 
 # Learning about the Data
 str(aug_train_complete)
 summary(aug_train_complete)
 head(aug_train_complete)
 
+str(aug_test_complete)
+summary(aug_test_complete)
+head(aug_test_complete)
+
 # remove unneccessary variables: employee_id and city 
 aug_train = subset(aug_train_complete, select = -c(1,2))
+aug_test = subset(aug_test_complete, select = -c(1,2))
 
 head(aug_train)
+summary(aug_train)
+str(aug_train)
+
+head(aug_test)
 summary(aug_train)
 str(aug_train)
 
@@ -29,10 +39,14 @@ str(aug_train)
 summary(aug_train$city_development_index)
 summary(aug_train$training_hours)
 
+summary(aug_test$city_development_index)
+summary(aug_test$training_hours)
+
 # Data Conditioning
 
 # remove duplicates
-unique(aug_train$company_size)  
+unique(aug_train$company_size)
+unique(aug_test$company_size)
 # Transform company_size 
 small_cap = c('<10', '10/49','50-99')
 medium_cap = c('100-500','500-999')
@@ -42,19 +56,29 @@ all_size = c(small_cap,medium_cap,large_cap)
 # Assign elements in company_size to correct cap
 for (i in all_size){
         if (i %in% small_cap){
-                aug_train$company_size[aug_train$company_size == i] = "Small Cap"}
+                aug_train$company_size[aug_train$company_size == i] = "Small Cap"
+                aug_test$company_size[aug_test$company_size == i] = "Small Cap"
+                }
         else if (i %in% medium_cap){
-                aug_train$company_size[aug_train$company_size == i] = "Medium Cap"}
+                aug_train$company_size[aug_train$company_size == i] = "Medium Cap"
+                aug_test$company_size[aug_test$company_size == i] = "Medium Cap"
+                }
         else if (i %in% large_cap){
-                aug_train$company_size[aug_train$company_size == i] = "Large Cap"}}
+                aug_train$company_size[aug_train$company_size == i] = "Large Cap"
+                aug_test$company_size[aug_test$company_size == i] = "Large Cap"
+                }}
 
 # Plot transformed variable
 ggplot(aug_train, aes(company_size)) + geom_bar(fill = 'blue',alpha = 0.6) +
         geom_text( stat='count', aes(label=..count..), vjust=-0.5)
 
+ggplot(aug_test, aes(company_size)) + geom_bar(fill = 'blue',alpha = 0.6) +
+        geom_text( stat='count', aes(label=..count..), vjust=-0.5)
+
 
 # remove duplicates
 unique(aug_train$experience)
+unique(aug_test$experience)
 # Transform experience variable
 entry_level = c('<1','1','2','3')  # year of experience <1 - 3
 mid_level = c('4','5','6','7','8','9') # year of experience 4-9
@@ -63,39 +87,57 @@ all_level = c(entry_level,mid_level,senior_level) # combine all new variables
 # Assign elements in experience in correct level
 for (i in all_level){
     if (i %in% entry_level){
-        aug_train$experience[aug_train$experience == i] = "Entry Level"}
+        aug_train$experience[aug_train$experience == i] = "Entry Level"
+        aug_test$experience[aug_test$experience == i] = "Entry Level"
+        }
     else if (i %in% mid_level){
-        aug_train$experience[aug_train$experience == i] = "Mid Level"}
+        aug_train$experience[aug_train$experience == i] = "Mid Level"
+        aug_test$experience[aug_test$experience == i] = "Mid Level"
+        }
     else if (i %in% senior_level){
-        aug_train$experience[aug_train$experience == i] = "Senior Level"}}
+        aug_train$experience[aug_train$experience == i] = "Senior Level"
+        aug_test$experience[aug_test$experience == i] = "Senior Level"
+        }}
 # Plot transformed variable
 ggplot(aug_train, aes(experience)) + geom_bar(fill = 'blue',alpha = 0.6) +
         geom_text( stat='count', aes(label=..count..), vjust=-0.5)
 
+ggplot(aug_test, aes(experience)) + geom_bar(fill = 'blue',alpha = 0.6) +
+        geom_text( stat='count', aes(label=..count..), vjust=-0.5)
 
 # remove duplicates
 unique(aug_train$major_discipline)
+unique(aug_test$major_discipline)
 
 # Transform major_discipline and Assign elements in major_discipline to other_major and label as "Other"
 other_major = c('Arts','Business Degree','Humanities','No Major')
 for (i in other_major){
         if (i %in% other_major){
-                aug_train$major_discipline[aug_train$major_discipline == i] = "Other"}}
+                aug_train$major_discipline[aug_train$major_discipline == i] = "Other"
+                aug_test$major_discipline[aug_test$major_discipline == i] = "Other"
+                }}
 # Plot transformed variable
 ggplot(aug_train, aes(major_discipline)) + geom_bar(fill = 'blue',alpha = 0.6) +
         geom_text( stat='count', aes(label=..count..), vjust=-0.5)
 
+ggplot(aug_test, aes(major_discipline)) + geom_bar(fill = 'blue',alpha = 0.6) +
+        geom_text( stat='count', aes(label=..count..), vjust=-0.5)
 
 # Remove duplicates
 unique(aug_train$company_type)
+unique(aug_test$company_type)
 # Transform company_type by Assigning elements to other_company_type then label as Other
 other_company_type = c("Early Stage Startup","Funded Startup","NGO","Public Sector")
 for (i in other_company_type){
-        aug_train$company_type[aug_train$company_type == i] = "Other"}
+        aug_train$company_type[aug_train$company_type == i] = "Other"
+        aug_test$company_type[aug_test$company_type == i] = "Other"
+        }
 # PLot transformed company_type
 ggplot(aug_train, aes(company_type)) + geom_bar(fill = 'blue',alpha = 0.6) +
         geom_text( stat='count', aes(label=..count..), vjust=-0.5)
 
+ggplot(aug_test, aes(company_type)) + geom_bar(fill = 'blue',alpha = 0.6) +
+        geom_text( stat='count', aes(label=..count..), vjust=-0.5)
 
 # Remove duplicates and print out unique values
 unique(aug_train$target)
@@ -116,60 +158,102 @@ aug_train$target = as.factor(aug_train$target)
 ggplot(aug_train, aes(target)) + geom_bar(fill = 'blue',alpha = 0.6) +
         geom_text( stat='count', aes(label=..count..), vjust=-0.5)
 
+ggplot(aug_test, aes(target)) + geom_bar(fill = 'blue',alpha = 0.6) +
+        geom_text( stat='count', aes(label=..count..), vjust=-0.5)
+
 
 # plot missing data: 9% are missing data
 missing = is.na(aug_train)
 sum(missing)
 missmap(aug_train, main = 'Missing Map', col = c('yellow', 'purple'))
 
+missingTest = is.na(aug_test)
+sum(missingTest)
+missmap(aug_test, main = 'Missing Map', col = c('yellow', 'purple'))
+
 # Fill in missing data for gender with "Other"
 aug_train$gender = as.character(aug_train$gender)
 aug_train$gender = replace_na(aug_train$gender,'Other')
+
+aug_test$gender = as.character(aug_test$gender)
+aug_test$gender = replace_na(aug_test$gender,'Other')
 
 # Check for NAs
 sum(is.na(aug_train$gender))
 unique(aug_train$gender)
 
+sum(is.na(aug_test$gender))
+unique(aug_test$gender)
+
 # Fill in missing data for enrolled_university with "Unknown"
 aug_train$enrolled_university = replace_na(aug_train$enrolled_university,'Unknown')
+
+aug_test$enrolled_university = replace_na(aug_test$enrolled_university,'Unknown')
 
 # Check for NAs
 sum(is.na(aug_train$enrolled_university))
 unique(aug_train$enrolled_university)
+
+sum(is.na(aug_test$enrolled_university))
+unique(aug_test$enrolled_university)
 
 # Fill in missing data for education_level with "Unknown"
 aug_train$education_level = replace_na(aug_train$education_level,'Unknown')
 sum(is.na(aug_train$education_level))
 unique(aug_train$education_level)
 
+aug_test$education_level = replace_na(aug_test$education_level,'Unknown')
+sum(is.na(aug_test$education_level))
+unique(aug_test$education_level)
+
 # Fill in missing data for company_size with "Unknown"
 aug_train$company_size = replace_na(aug_train$company_size,'Unknown')
+
+aug_test$company_size = replace_na(aug_test$company_size,'Unknown')
 
 # Check for NAs
 sum(is.na(aug_train$company_size))
 unique(aug_train$company_size)
 
+sum(is.na(aug_test$company_size))
+unique(aug_test$company_size)
+
 # Fill in missing data for major_discipline with "Other"
 aug_train$major_discipline  = replace_na(aug_train$major_discipline ,'Other')
+
+aug_test$major_discipline  = replace_na(aug_test$major_discipline ,'Other')
 
 # Check for NAs
 sum(is.na(aug_train$major_discipline ))
 unique(aug_train$major_discipline )
 
+sum(is.na(aug_test$major_discipline ))
+unique(aug_test$major_discipline )
+
 # Fill in missing data for company_type with "Other"
 aug_train$company_type  = replace_na(aug_train$company_type ,'Other')
+
+aug_test$company_type  = replace_na(aug_test$company_type ,'Other')
 
 # Check for NAs
 sum(is.na(aug_train$company_type ))
 unique(aug_train$company_type )
+
+sum(is.na(aug_test$company_type ))
+unique(aug_test$company_type )
 
 # Drop missing values in experience and last_new_job 
 
 aug_train = aug_train[is.na(aug_train$experience) != TRUE, ]
 aug_train = aug_train[is.na(aug_train$last_new_job) != TRUE, ]
 
+aug_test = aug_test[is.na(aug_test$experience) != TRUE, ]
+aug_test = aug_test[is.na(aug_test$last_new_job) != TRUE, ]
+
 # Check missing data again : 0 missing data
 missmap(aug_train, main = 'Missing Map', col = c('yellow', 'purple'))
+
+missmap(aug_test, main = 'Missing Map', col = c('yellow', 'purple'))
 
 # Plot each variables
 # plot gender

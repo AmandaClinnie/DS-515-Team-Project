@@ -97,6 +97,32 @@ table(pred4)
 
 confusionMatrix(pred4, aug_train$target)
 
+str(aug_train)
+str(aug_test)
+
+# use decision tree model to predict outcome of test data
+predictTest = predict(tree4, newdata=aug_test, type="class")
+table(predictTest)
+
+# add target feature to test data dataframe
+aug_test$target = predictTest
+print(head(aug_test))
+
+# get summary of city_development_index values for both churn and remain
+summary(aug_test$city_development_index[aug_test$target == "Will Remain"])
+summary(aug_test$city_development_index[aug_test$target == "Will Churn"])
+
+# inspect some feature values for those rows/employees that remain vs churn
+table(aug_test$relevent_experience[aug_test$target == "Will Remain"])
+table(aug_test$relevent_experience[aug_test$target == "Will Churn"])
+
+table(aug_test$major_discipline[aug_test$target == "Will Remain"])
+table(aug_test$major_discipline[aug_test$target == "Will Churn"])
+
+summary(aug_test$training_hours[aug_test$target == "Will Remain"])
+summary(aug_test$training_hours[aug_test$target == "Will Churn"])
+
+
 # Tree #5 ----------------------------------
 # train classification tree model
 # predict based on only company_size attribute (excluding target)
